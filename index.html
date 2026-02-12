@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendário Lunar Atualizado</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #f4f4f4;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  background: #111;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #333;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.day {
+  border: 1px solid #ddd;
+  padding: 10px;
+  min-height: 85px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.today {
+  background: #111;
+  color: white;
+  font-weight: bold;
+}
+
+.phase {
+  font-size: 22px;
+  margin-top: 5px;
+}
+
+.phase-name {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .day {
+    min-height: 65px;
+    font-size: 12px;
+  }
+  .phase {
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Calendário Lunar</h1>
+
+<div class="controls">
+<button onclick="changeMonth(-1)">◀</button>
+<h2 id="monthYear"></h2>
+<button onclick="changeMonth(1)">▶</button>
+</div>
+
+<div class="calendar" id="calendar"></div>
+</div>
+
+<script>
+const synodicMonth = 29.53058867;
+const knownNewMoon = new Date(2000, 0, 6);
+let currentDate = new Date();
+
+function getMoonPhase(date) {
+  const daysSince = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
+  const phase = (daysSince % synodicMonth) / synodicMonth;
+
+  if (phase < 0.03 || phase > 0.97) return {name:"Lua Nova", icon:"🌑"};
+  if (phase < 0.25) return {name:"Lua Crescente", icon:"🌒"};
+  if (phase < 0.53) return {name:"Lua Cheia", icon:"🌕"};
+  if (phase < 0.75) return {name:"Lua Minguante", icon:"🌖"};
+  return {name:"Lua Nova", icon:"🌑"};
+}
+
+function generateCalendar() {
+  const calendar = document.getElementById("calendar");
+  const monthYear = document.getElementById("monthYear");
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+
+  monthYear.textContent = firstDay.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+
+  calendar.innerHTML = "";
+
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    const date = new Date(year, month, i);
+    const moon = getMoonPhase(date);
+
+    const div = document.createElement("div");
+    div.classList.add("day");
+
+    const today = new Date();
+    if (
+      i === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+    ) {
+      div.classList.add("today");
+    }
+
+    div.innerHTML = `
+      ${i}
+      <div class="phase">${moon.icon}</div>
+      <div class="phase-name">${moon.name}</div>
+    `;
+
+    calendar.appendChild(div);
+  }
+}
+
+function changeMonth(step) {
+  currentDate.setMonth(currentDate.getMonth() + step);
+  generateCalendar();
+}
+
+generateCalendar();
+</script>
+
+</body>
+</html>
