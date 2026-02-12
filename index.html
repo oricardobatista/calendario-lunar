@@ -14,12 +14,12 @@ body {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: auto;
   background: white;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
 }
 
 h1 {
@@ -31,16 +31,16 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 button {
-  padding: 8px 14px;
+  padding: 10px 16px;
   border: none;
   background: #111;
   color: white;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 16px;
 }
 
@@ -51,16 +51,22 @@ button:hover {
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 8px;
 }
 
 .day {
-  border: 1px solid #ddd;
-  padding: 10px;
-  min-height: 85px;
+  border: 1px solid #e0e0e0;
+  padding: 12px;
+  min-height: 100px;
   text-align: center;
   font-size: 14px;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: 0.2s ease;
+  background: #fafafa;
+}
+
+.day:hover {
+  background: #f0f0f0;
 }
 
 .today {
@@ -70,22 +76,35 @@ button:hover {
 }
 
 .phase {
-  font-size: 22px;
-  margin-top: 5px;
+  font-size: 24px;
+  margin-top: 8px;
 }
 
 .phase-name {
-  font-size: 11px;
-  margin-top: 4px;
+  font-size: 12px;
+  margin-top: 6px;
 }
 
-@media (max-width: 600px) {
-  .day {
-    min-height: 65px;
-    font-size: 12px;
+/* TABLET */
+@media (max-width: 768px) {
+  .calendar {
+    grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* CELULAR */
+@media (max-width: 480px) {
+  .calendar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .day {
+    min-height: 120px;
+    font-size: 16px;
+  }
+
   .phase {
-    font-size: 18px;
+    font-size: 28px;
   }
 }
 </style>
@@ -152,7 +171,7 @@ function generateCalendar() {
     }
 
     div.innerHTML = `
-      ${i}
+      <div>${i}</div>
       <div class="phase">${moon.icon}</div>
       <div class="phase-name">${moon.name}</div>
     `;
